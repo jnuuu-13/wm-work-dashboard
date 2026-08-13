@@ -46,10 +46,6 @@ export default async function Home() {
 
   return (
     <div className="mx-auto w-full max-w-5xl p-8">
-      <header className="mb-6">
-        <h1 className="text-2xl font-semibold">Worklog</h1>
-      </header>
-
       <p className="mb-4 text-sm text-muted-foreground">
         <a href="/tasks" className="underline">
           전체 Task 목록 보기 →
