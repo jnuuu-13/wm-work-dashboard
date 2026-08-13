@@ -1,7 +1,8 @@
-import { StickyNote, CalendarDays, Users, LineChart, BookOpen } from "lucide-react";
+import { CalendarDays, Users, LineChart, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { createServerClient } from "@/lib/supabase/server";
 import { TodayCard } from "@/components/home/today-card";
+import { QuickNoteCard } from "@/components/home/quick-note-card";
 import { PlaceholderCard } from "@/components/home/placeholder-card";
 import { todayStr, monthGrid, currentMonthStr } from "@/lib/dates";
 import { weeklyStats } from "@/lib/weekly-review";
@@ -59,30 +60,7 @@ export default async function Home() {
         <div className="sm:col-span-2">
           <TodayCard tasks={tasks ?? []} events={todayEvents ?? []} />
         </div>
-        <PlaceholderCard
-          title="Quick Note"
-          description="업무 중 빠르게 메모 작성"
-          icon={StickyNote}
-          accentClass="bg-block-lilac"
-          href="/quick-notes"
-          preview={
-            latestNote ? (
-              <div className="flex flex-col gap-1.5 rounded-md bg-muted/50 p-3 text-sm">
-                <div className="flex items-center gap-2">
-                  {latestNote.tag && (
-                    <Badge variant="outline" className="rounded-full text-xs">#{latestNote.tag}</Badge>
-                  )}
-                  <span className="text-muted-foreground">
-                    {new Date(latestNote.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-                <p className="line-clamp-2 text-foreground/80">{latestNote.content}</p>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">최근 메모가 없습니다</p>
-            )
-          }
-        />
+        <QuickNoteCard latestNote={latestNote} />
 
         {/* 중단: Calendar(크게) | Client & Team Meeting */}
         <div className="sm:col-span-2">

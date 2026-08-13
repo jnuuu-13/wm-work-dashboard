@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 
 export async function createQuickNote(formData: FormData) {
@@ -36,6 +37,7 @@ export async function deleteQuickNote(id: string) {
 
   revalidatePath("/quick-notes");
   revalidatePath("/");
+  redirect("/quick-notes");
 }
 
 export async function convertNoteToTask(noteId: string, formData: FormData) {

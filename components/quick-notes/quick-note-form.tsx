@@ -18,17 +18,20 @@ export function QuickNoteForm({
   defaultContent,
   defaultTag,
   submitLabel = "저장",
+  onSaved,
 }: {
   action: (formData: FormData) => Promise<void>;
   defaultContent?: string;
   defaultTag?: string;
   submitLabel?: string;
+  onSaved?: () => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleSubmit(formData: FormData) {
     await action(formData);
     formRef.current?.reset();
+    onSaved?.();
   }
 
   return (
