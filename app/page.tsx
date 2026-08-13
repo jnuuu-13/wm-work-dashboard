@@ -45,11 +45,14 @@ export default async function Home() {
   return (
     <div className="mx-auto max-w-5xl p-8">
       <header className="mb-6">
-        <h1 className="text-2xl font-semibold">WM 업무 대시보드</h1>
-        <p className="text-sm text-muted-foreground">
-          일정 확인 → 업무 수행 → 상담·미팅 기록 → 후속 업무 관리 → 업무 지식 축적 → 주간 회고
-        </p>
+        <h1 className="text-2xl font-semibold">Worklog</h1>
       </header>
+
+      <p className="mb-4 text-sm text-muted-foreground">
+        <a href="/tasks" className="underline">
+          전체 Task 목록 보기 →
+        </a>
+      </p>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* 상단: Today(크게) | Quick Note */}
@@ -181,12 +184,6 @@ export default async function Home() {
           }
         />
       </div>
-
-      <p className="mt-6 text-sm text-muted-foreground">
-        <a href="/tasks" className="underline">
-          전체 Task 목록 보기 →
-        </a>
-      </p>
     </div>
   );
 }

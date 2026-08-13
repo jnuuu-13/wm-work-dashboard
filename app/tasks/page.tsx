@@ -21,7 +21,7 @@ export default async function TasksPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-8">
+    <div className="mx-auto max-w-5xl p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <Link href="/" className="text-sm text-muted-foreground hover:underline">

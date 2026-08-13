@@ -22,7 +22,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
   const checklist = (task.checklist as ChecklistItem[] | null) ?? [];
 
   return (
-    <div className="mx-auto max-w-2xl p-8">
+    <div className="mx-auto max-w-5xl p-8">
       <Link href="/tasks" className="text-sm text-muted-foreground hover:underline">
         ← Tasks
       </Link>
