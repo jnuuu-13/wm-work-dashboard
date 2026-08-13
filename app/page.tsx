@@ -1,13 +1,14 @@
-import { CalendarDays, Users, LineChart, BookOpen } from "lucide-react";
+import { CalendarDays, LineChart, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { createServerClient } from "@/lib/supabase/server";
 import { TodayCard } from "@/components/home/today-card";
 import { QuickNoteCard } from "@/components/home/quick-note-card";
+import { MeetingCard } from "@/components/home/meeting-card";
 import { PlaceholderCard } from "@/components/home/placeholder-card";
 import { todayStr, monthGrid, currentMonthStr } from "@/lib/dates";
 import { weeklyStats } from "@/lib/weekly-review";
 import { Badge } from "@/components/ui/badge";
-import { meetingTypeColor, playbookCategoryColor } from "@/lib/badge-colors";
+import { playbookCategoryColor } from "@/lib/badge-colors";
 
 export const dynamic = "force-dynamic";
 
@@ -90,30 +91,7 @@ export default async function Home() {
             }
           />
         </div>
-        <PlaceholderCard
-          title="Client & Team Meeting"
-          description="오늘 또는 가장 가까운 미팅 요약"
-          icon={Users}
-          accentClass="bg-block-mint"
-          href="/meetings"
-          preview={
-            nearestMeeting ? (
-              <div className="rounded-md bg-muted/50 p-3 text-sm">
-                <div className="mb-1 flex items-center gap-2">
-                  <Badge className={meetingTypeColor[nearestMeeting.meeting_type]}>
-                    {nearestMeeting.meeting_type}
-                  </Badge>
-                  <span className="text-muted-foreground">
-                    {nearestMeeting.date} {nearestMeeting.time ?? ""}
-                  </span>
-                </div>
-                <p className="text-foreground/80">{nearestMeeting.title}</p>
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground">예정된 미팅이 없습니다</p>
-            )
-          }
-        />
+        <MeetingCard nearestMeeting={nearestMeeting} />
 
         {/* 하단: Weekly Review(크게) | Playbook */}
         <div className="sm:col-span-2">

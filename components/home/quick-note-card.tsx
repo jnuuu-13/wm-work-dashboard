@@ -18,7 +18,6 @@ export function QuickNoteCard({ latestNote }: { latestNote: QuickNote | null }) 
         </CardHeader>
       </Link>
       <CardContent>
-        <p className="mb-3 text-sm text-muted-foreground">업무 중 빠르게 메모 작성</p>
         {latestNote ? (
           <Link
             href={`/quick-notes/${latestNote.id}`}
