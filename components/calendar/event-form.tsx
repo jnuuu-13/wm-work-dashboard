@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { Database } from "@/lib/supabase/types";
+import { TimeSelect } from "@/components/calendar/time-select";
 
 const EVENT_TYPES = ["고객상담", "고객Follow-up", "내부미팅", "상품교육", "세미나", "기타"] as const;
 
@@ -67,8 +68,8 @@ export function EventForm({
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="time">시간</Label>
-              <Input id="time" name="time" type="time" defaultValue={event?.time ?? ""} />
+              <Label>시간</Label>
+              <TimeSelect name="time" defaultValue={event?.time} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
