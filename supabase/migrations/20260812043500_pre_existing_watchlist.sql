@@ -1,0 +1,3 @@
+-- Placeholder for a pre-existing remote migration (created before this project's history began).
+-- Its actual effect (creating the "watchlist" table) already exists on the remote database;
+-- this file exists only so `supabase migration repair` can register it in local history.
