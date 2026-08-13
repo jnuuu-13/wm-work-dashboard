@@ -22,7 +22,7 @@ export default async function QuickNotesPage() {
     .order("created_at", { ascending: false });
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div className="mx-auto w-full max-w-5xl p-8">
       <Link href="/" className="text-sm text-muted-foreground hover:underline">
         ← 홈
       </Link>

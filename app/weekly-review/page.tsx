@@ -39,7 +39,7 @@ export default async function WeeklyReviewPage() {
   const saveAction = saveReflection.bind(null, stats.weekStart, stats.weekEnd);
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div className="mx-auto w-full max-w-5xl p-8">
       <Link href="/" className="text-sm text-muted-foreground hover:underline">
         ← 홈
       </Link>

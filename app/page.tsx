@@ -43,7 +43,7 @@ export default async function Home() {
   const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div className="mx-auto w-full max-w-5xl p-8">
       <header className="mb-6">
         <h1 className="text-2xl font-semibold">Worklog</h1>
       </header>

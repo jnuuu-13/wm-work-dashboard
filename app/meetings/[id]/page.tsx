@@ -29,7 +29,7 @@ export default async function MeetingDetailPage({ params }: { params: Promise<{ 
   if (!meeting) notFound();
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div className="mx-auto w-full max-w-5xl p-8">
       <Link href="/meetings" className="text-sm text-muted-foreground hover:underline">
         ← Client & Team Meeting
       </Link>

@@ -17,7 +17,7 @@ export default async function PlaybookDetailPage({ params }: { params: Promise<{
   if (!entry) notFound();
 
   return (
-    <div className="mx-auto max-w-5xl p-8">
+    <div className="mx-auto w-full max-w-5xl p-8">
       <Link href="/playbook" className="text-sm text-muted-foreground hover:underline">
         ← Playbook
       </Link>
