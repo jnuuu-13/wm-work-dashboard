@@ -2,7 +2,7 @@ import Link from "next/link";
 import { createServerClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { QuickNoteDialogButton } from "@/components/quick-notes/quick-note-dialog-button";
+import { QuickNoteForm } from "@/components/quick-notes/quick-note-form";
 import { TaskForm } from "@/components/tasks/task-form";
 import { PlaybookForm } from "@/components/playbook/playbook-form";
 import {
@@ -26,9 +26,10 @@ export default async function QuickNotesPage() {
       <Link href="/" className="text-sm text-muted-foreground hover:underline">
         ← 홈
       </Link>
-      <div className="mt-2 mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">Quick Note</h1>
-        <QuickNoteDialogButton action={createQuickNote} />
+      <h1 className="mt-2 mb-6 text-2xl font-semibold">Quick Note</h1>
+
+      <div className="mb-8 rounded-lg border border-border bg-card p-4">
+        <QuickNoteForm action={createQuickNote} />
       </div>
 
       <ul className="flex flex-col gap-3">
