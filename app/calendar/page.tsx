@@ -111,12 +111,12 @@ export default async function CalendarPage({
                 key={ev.id}
                 className="flex items-center justify-between rounded-lg border border-border bg-card p-3"
               >
-                <div className="flex items-center gap-2">
+                <Link href={`/calendar/${ev.id}`} className="flex items-center gap-2 hover:underline">
                   <Badge className={eventTypeColor[ev.event_type]}>{ev.event_type}</Badge>
                   <span className="font-medium">{ev.title}</span>
                   {ev.time && <span className="text-sm text-muted-foreground">{ev.time}</span>}
                   {ev.location && <span className="text-sm text-muted-foreground">@{ev.location}</span>}
-                </div>
+                </Link>
                 <div className="flex items-center gap-1">
                   <EventForm
                     action={updateEvent.bind(null, ev.id)}

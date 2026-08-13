@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { createServerClient } from "@/lib/supabase/server";
 
 function parseEventFields(formData: FormData) {
@@ -40,9 +41,11 @@ export async function updateEvent(id: string, formData: FormData) {
 
 export async function deleteEvent(id: string) {
   const supabase = createServerClient();
+  const { data: existing } = await supabase.from("events").select("date").eq("id", id).single();
   const { error } = await supabase.from("events").delete().eq("id", id);
   if (error) throw new Error(error.message);
 
   revalidatePath("/calendar");
   revalidatePath("/");
+  redirect(existing ? `/calendar?date=${existing.date}` : "/calendar");
 }

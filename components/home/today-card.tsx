@@ -36,7 +36,7 @@ export function TodayCard({ tasks, events }: { tasks: Task[]; events: Event[] })
               {events.map((ev) => (
                 <li key={ev.id}>
                   <Link
-                    href={`/calendar?date=${ev.date}`}
+                    href={`/calendar/${ev.id}`}
                     className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-accent"
                   >
                     <div className="flex items-center gap-2">
