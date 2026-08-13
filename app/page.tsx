@@ -4,7 +4,9 @@ import { createServerClient } from "@/lib/supabase/server";
 import { TodayCard } from "@/components/home/today-card";
 import { PlaceholderCard } from "@/components/home/placeholder-card";
 import { todayStr, monthGrid, currentMonthStr } from "@/lib/dates";
+import { weeklyStats } from "@/lib/weekly-review";
 import { Badge } from "@/components/ui/badge";
+import { meetingTypeColor, playbookCategoryColor } from "@/lib/badge-colors";
 
 export const dynamic = "force-dynamic";
 
@@ -14,18 +16,29 @@ export default async function Home() {
   const days = monthGrid(month);
   const rangeStart = format(days[0].date, "yyyy-MM-dd");
   const rangeEnd = format(days[days.length - 1].date, "yyyy-MM-dd");
+  const today = todayStr();
 
-  const [{ data: tasks }, { data: todayEvents }, { data: monthEvents }] = await Promise.all([
-    supabase
-      .from("tasks")
-      .select("*")
-      .neq("status", "Done")
-      .lte("due_date", todayStr())
-      .order("due_date", { ascending: true }),
-    supabase.from("events").select("*").eq("date", todayStr()).order("time", { ascending: true, nullsFirst: false }),
+  const [
+    { data: tasks },
+    { data: todayEvents },
+    { data: monthEvents },
+    { data: latestNote },
+    { data: todayMeeting },
+    { data: upcomingMeeting },
+    { data: latestPlaybook },
+    stats,
+  ] = await Promise.all([
+    supabase.from("tasks").select("*").neq("status", "Done").lte("due_date", today).order("due_date", { ascending: true }),
+    supabase.from("events").select("*").eq("date", today).order("time", { ascending: true, nullsFirst: false }),
     supabase.from("events").select("date").gte("date", rangeStart).lte("date", rangeEnd),
+    supabase.from("quick_notes").select("*").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    supabase.from("meetings").select("*").eq("date", today).order("time", { ascending: true, nullsFirst: false }).limit(1).maybeSingle(),
+    supabase.from("meetings").select("*").gt("date", today).order("date", { ascending: true }).limit(1).maybeSingle(),
+    supabase.from("playbook").select("*").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+    weeklyStats(),
   ]);
 
+  const nearestMeeting = todayMeeting ?? upcomingMeeting;
   const eventDates = new Set((monthEvents ?? []).map((e) => e.date));
   const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -50,13 +63,21 @@ export default async function Home() {
           accentClass="bg-block-lilac"
           href="/quick-notes"
           preview={
-            <div className="flex flex-col gap-1.5 rounded-md bg-muted/50 p-3 text-sm">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="rounded-full text-xs">#고객질문</Badge>
-                <span className="text-muted-foreground">09:41</span>
+            latestNote ? (
+              <div className="flex flex-col gap-1.5 rounded-md bg-muted/50 p-3 text-sm">
+                <div className="flex items-center gap-2">
+                  {latestNote.tag && (
+                    <Badge variant="outline" className="rounded-full text-xs">#{latestNote.tag}</Badge>
+                  )}
+                  <span className="text-muted-foreground">
+                    {new Date(latestNote.created_at).toLocaleTimeString("ko-KR", { hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+                <p className="line-clamp-2 text-foreground/80">{latestNote.content}</p>
               </div>
-              <p className="text-foreground/80">ISA 이전 시 세제 관련 추가 확인 필요</p>
-            </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">최근 메모가 없습니다</p>
+            )
           }
         />
 
@@ -77,7 +98,7 @@ export default async function Home() {
                   <span
                     key={dateStr}
                     className={`flex flex-col items-center rounded-full py-0.5 ${
-                      dateStr === todayStr() ? "bg-block-mint font-semibold text-black" : ""
+                      dateStr === today ? "bg-block-mint font-semibold text-black" : ""
                     } ${inMonth ? "" : "opacity-30"}`}
                   >
                     {date.getDate()}
@@ -95,13 +116,21 @@ export default async function Home() {
           accentClass="bg-block-mint"
           href="/meetings"
           preview={
-            <div className="rounded-md bg-muted/50 p-3 text-sm">
-              <div className="mb-1 flex items-center gap-2">
-                <Badge className="rounded-full bg-block-mint text-black">상품교육</Badge>
-                <span className="text-muted-foreground">08/14 14:00</span>
+            nearestMeeting ? (
+              <div className="rounded-md bg-muted/50 p-3 text-sm">
+                <div className="mb-1 flex items-center gap-2">
+                  <Badge className={meetingTypeColor[nearestMeeting.meeting_type]}>
+                    {nearestMeeting.meeting_type}
+                  </Badge>
+                  <span className="text-muted-foreground">
+                    {nearestMeeting.date} {nearestMeeting.time ?? ""}
+                  </span>
+                </div>
+                <p className="text-foreground/80">{nearestMeeting.title}</p>
               </div>
-              <p className="text-foreground/80">ISA 계좌이전 프로세스 교육</p>
-            </div>
+            ) : (
+              <p className="text-sm text-muted-foreground">예정된 미팅이 없습니다</p>
+            )
           }
         />
 
@@ -116,9 +145,9 @@ export default async function Home() {
             preview={
               <div className="grid grid-cols-3 gap-2 text-center">
                 {[
-                  { label: "완료 Task", value: "0" },
-                  { label: "Meeting", value: "0" },
-                  { label: "신규 Playbook", value: "0" },
+                  { label: "완료 Task", value: String(stats.completedTasks.length) },
+                  { label: "Meeting", value: String(stats.meetings.length) },
+                  { label: "신규 Playbook", value: String(stats.newPlaybook.length) },
                 ].map((s) => (
                   <div key={s.label} className="rounded-md bg-muted/50 p-2">
                     <div className="text-lg font-semibold">{s.value}</div>
@@ -136,8 +165,18 @@ export default async function Home() {
           accentClass="bg-block-pink"
           href="/playbook"
           preview={
-            <div className="flex items-center gap-2 rounded-full border border-border px-3 py-2 text-sm text-muted-foreground">
-              🔎 ISA 계좌이전
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 rounded-full border border-border px-3 py-2 text-sm text-muted-foreground">
+                🔎 검색
+              </div>
+              {latestPlaybook && (
+                <div className="flex items-center gap-2 text-xs">
+                  <Badge className={playbookCategoryColor[latestPlaybook.category]}>
+                    {latestPlaybook.category}
+                  </Badge>
+                  <span className="text-muted-foreground">{latestPlaybook.title}</span>
+                </div>
+              )}
             </div>
           }
         />

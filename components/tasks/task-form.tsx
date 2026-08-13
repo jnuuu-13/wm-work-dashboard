@@ -24,10 +24,12 @@ import { TASK_TYPES, TASK_PRIORITIES, type Task } from "@/lib/types";
 export function TaskForm({
   action,
   task,
+  defaults,
   trigger,
 }: {
   action: (formData: FormData) => Promise<void>;
   task?: Task;
+  defaults?: { title?: string; description?: string; task_type?: string };
   trigger: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
@@ -47,11 +49,11 @@ export function TaskForm({
         <form action={handleSubmit} className="flex flex-col gap-4">
           <div className="grid gap-2">
             <Label htmlFor="title">업무명</Label>
-            <Input id="title" name="title" defaultValue={task?.title} required />
+            <Input id="title" name="title" defaultValue={task?.title ?? defaults?.title} required />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="description">업무 내용</Label>
-            <Textarea id="description" name="description" defaultValue={task?.description ?? ""} />
+            <Textarea id="description" name="description" defaultValue={task?.description ?? defaults?.description ?? ""} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
@@ -60,7 +62,7 @@ export function TaskForm({
             </div>
             <div className="grid gap-2">
               <Label htmlFor="task_type">업무 유형</Label>
-              <Select name="task_type" defaultValue={task?.task_type ?? "Internal"}>
+              <Select name="task_type" defaultValue={task?.task_type ?? defaults?.task_type ?? "Internal"}>
                 <SelectTrigger id="task_type">
                   <SelectValue />
                 </SelectTrigger>
